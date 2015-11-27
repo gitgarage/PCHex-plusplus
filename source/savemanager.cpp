@@ -210,10 +210,26 @@ void savemanager::getPkmn(const int boxnumber, const int indexnumber, char* pkmn
     decryptPkmn(pkmn);
 }
 
+bool savemanager::getPkmn(std::string path, char* data) {
+    //Reads a pk6 file and transfers its content to data 
+    std::ifstream file(path, std::ios::in | std::ios::binary);
+    file.read(data, PKMNLENGHT);
+    file.close();
+    return file;
+}
+
 void savemanager::setPkmn(const int boxnumber, const int indexnumber, char* pkmn) {
     //encrypts and write a pokemon into THE INTERNAL COPY OF THE SAVEFILE
     encryptPkmn(pkmn);
     memcpy(&save[getPkmnAddress(boxnumber, indexnumber)], pkmn, PKMNLENGHT);
+}
+
+bool savemanager::setPkmn(std::string path, char* data) {
+    //Writes a pk6 file from data 
+    std::ofstream file(path, std::ios::in | std::ios::binary);
+    file.write(data, PKMNLENGHT);
+    file.close();
+    return file;
 }
 
 bool savemanager::commit() {

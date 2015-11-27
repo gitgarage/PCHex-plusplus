@@ -8,18 +8,21 @@ pokemon::pokemon(const int boxnum, const int indexnum, savemanager* savem) {
     boxnumber = boxnum;
     indexnumber = indexnum;
     save = savem;
-    loadFromSave();
+    
+    //gets the 232 byte bytes of a pokemon from the savefile
+    save->getPkmn(boxnumber, indexnumber, data);
+    
+    initialize();
 }
 
-void pokemon::loadFromSave() {
+void pokemon::initialize() {
     //const with positions and sizes of every needed parameter
     const int NICKNAMEPOS = 0x40;
     const int NICKNAMELENGTH = 23;
     const int NATUREPOS = 0x1C;
     const int NATURELENGTH = 1;
     
-    //gets the 232 byte bytes of a pokemon from the savefile
-    save->getPkmn(boxnumber, indexnumber, data);
+    
     
     //initializes the nickname of the pokemon instance
     char* temp = new char[NICKNAMELENGTH];
@@ -50,6 +53,20 @@ void pokemon::clone(pokemon& destination) {
     save->setPkmn(destination.getBoxNumber(), destination.getIndexNumber(), data);
     save->commit();
     destination = *this;
+}
+
+bool pokemon::exportPK6(std::string path) {
+    return save->setPkmn(path, data);
+}
+
+bool pokemon::importPK6(std::string path) {
+    bool completed = save->getPkmn(path, data);
+    if(completed) {
+        initialize();
+        savePkmn();
+    }
+    
+    return completed;
 }
 
 void pokemon::savePkmn() {

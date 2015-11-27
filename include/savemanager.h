@@ -55,7 +55,9 @@ class savemanager {
         bool loadSaveFile();
         std::string getBoxName(const int boxnumber);
         void getPkmn(const int boxnumber, const int indexnumber, char* pkmn);
+        bool getPkmn(std::string path, char* data);
         void setPkmn(const int boxnumber, const int indexnumber, char* pkmn);
+        bool setPkmn(std::string path, char* data);
         bool commit();
         ~savemanager();
 };
